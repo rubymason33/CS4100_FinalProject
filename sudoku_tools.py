@@ -153,8 +153,8 @@ def main():
     # print(board_as_array[4][6])
     # print('formatted:')
     # print(board_as_string)
-    test = get_test_boards('easy', 2)
-    print(test[0]['board_input'])
+    # test = get_test_boards('easy', 2)
+    # print(test[0]['board_input'])
 
 
 if __name__ == "__main__":
