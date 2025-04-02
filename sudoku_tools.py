@@ -44,13 +44,13 @@ def get_board_details(board_details: pd.Series) -> tuple:
     return board, solution, num_clues, difficulty_rating
 
 def formatted_to_array(formatted_str: str) -> list:
-    """Turns the string representation into an array that can be read by the algorithms
+    """Turns the string representation into an array of ints that can be read by the algorithms
 
     Args:
         formatted_str (str): the string representation
 
     Returns:
-        list: data as an array
+        list: data as an array of ints
     """
     rows = formatted_str.strip().split('\n')
     board_2d = []
@@ -59,7 +59,8 @@ def formatted_to_array(formatted_str: str) -> list:
         if '-' in row:
             continue
         clean_row = row.replace('|', '').strip().split()
-        board_2d.append(clean_row)
+        int_row = [0 if cell == '.' else int(cell) for cell in clean_row]
+        board_2d.append(int_row)
 
     return board_2d
 
@@ -67,14 +68,15 @@ def array_to_formatted(board_2d: list) -> str:
     """Converts (solved) array back to a string
 
     Args:
-        board_2d (list): board as an array
+        board_2d (list): board as an array of ints
 
     Returns:
-        str: formatted representation for reading
+        str: formatted string representation for reading
     """
     board_str = ""
     for i, row in enumerate(board_2d):
-        board_str += ' '.join(row[:3]) + ' | ' + ' '.join(row[3:6]) + ' | ' + ' '.join(row[6:]) + '\n'
+        display_row = [str(cell) if cell != 0 else '.' for cell in row]
+        board_str += ' '.join(display_row[:3]) + ' | ' + ' '.join(display_row[3:6]) + ' | ' + ' '.join(display_row[6:]) + '\n'
         if i in [2, 5]:
             board_str += '-' * 21 + '\n'
     return board_str
