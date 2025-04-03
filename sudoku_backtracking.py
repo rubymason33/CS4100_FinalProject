@@ -41,69 +41,62 @@ def test_level(difficulty: str, num_examples: int=10):
         percents.append(percent_correct)
         
     return times, percents
-        
 
-# def generate_viz(times: dict, percents: dict):
-#     # --- Plot 1: Times Line Plot ---
-#     plt.figure(figsize=(10, 5))
-    
-#     for difficulty, times in times.items():
-#         x = list(range(1, len(times) + 1))
-#         y = times
-#         plt.plot(x, y, marker='o', label=difficulty)  # line + points
-    
-#     plt.title("Sudoku Solving Times Per Difficulty")
-#     plt.xlabel("Example #")
-#     plt.ylabel("Time (seconds)")
-#     plt.legend(title="Difficulty")
-#     plt.grid(True)
-#     plt.tight_layout()
-#     plt.show()
-#     plt.savefig('Backtracking_Times.png')
-
-#     # --- Plot 2: Average Accuracy Bar Chart ---
-#     plt.figure(figsize=(6, 4))
-    
-#     levels = list(percents.keys())
-#     # Multiply each percent list by 100 and get the average
-#     averages = [
-#         sum([p * 100 for p in percents[level]]) / len(percents[level])
-#         for level in levels
-#     ]
-    
-#     plt.bar(levels, averages, color='lightgreen')
-#     plt.title("Average Accuracy by Difficulty")
-#     plt.xlabel("Difficulty")
-#     plt.ylabel("Accuracy (%)")
-#     plt.ylim(0, 100)
-#     plt.grid(axis='y')
-#     plt.tight_layout()
-#     plt.show()
-#     plt.savefig('Backtracking_Percents.png')
-#     return 
-
-
-
-def main():
-    num_examples = 3
+def collect_level_data(num_examples: int=10):
     easy_times, easy_pcts = test_level(difficulty='easy', num_examples=num_examples)
     med_times, med_pcts = test_level(difficulty='medium', num_examples=num_examples)
     hard_times, hard_pcts = test_level(difficulty='hard', num_examples=num_examples)
     
-    times = {'easy': easy_times,
+    times_dict = {'easy': easy_times,
              'medium': med_times,
              'hard': hard_times}
-    percents = {'easy': easy_pcts,
+    percents_dict = {'easy': easy_pcts,
                 'medium': med_pcts,
                 'hard': hard_pcts}
     
-    # generate_viz(times, percents)
-    
-    pprint.pp(times)
-    pprint.pp(percents)
-    
-    
+    return times_dict, percents_dict
+        
+def generate_viz(times:dict, percents:dict):
+    # transform the data for plotting
+    difficulties = list(times.keys())
+    num_examples = len(times['easy'])
+    colors = {'easy':'#0c6f16', 'medium':'#efd515', 'hard':'#cf2b18'}
+    all_times = [list(times[diff]) for diff in difficulties]
+    mean_percent = [100*(sum(percents[diff])/num_examples) for diff in difficulties]
+
+    # box plot for times
+    plt.figure(figsize=(10,6))
+    box = plt.boxplot(all_times, patch_artist=True, tick_labels=difficulties)
+
+    # apply color
+    for patch, diff in zip(box['boxes'], difficulties):
+        patch.set_facecolor(colors[diff])
+
+    # title
+    plt.ylabel('Time (s)')
+    plt.title(f'Time Distribution by Difficulty for {num_examples} Boards')
+    plt.grid(axis='y')
+    plt.tight_layout()
+    plt.savefig('TimePlot.png')
+    plt.show()
 
 
+    # bar plot for percents
+    plt.figure(figsize=(10,6))
+    plt.bar(difficulties, mean_percent, color=['#0c6f16', '#efd515','#cf2b18'], zorder=2)
+    plt.ylabel('Percent')
+    plt.title(f'Average Percent Correct by Difficulty for {num_examples} Boards')
+    plt.grid(axis='y')
+    plt.tight_layout()
+    plt.savefig('PercentPlot.png')
+    plt.show()
+    
+    return
+
+
+def main():
+    times_dict, percent_dict = collect_level_data(num_examples=10)
+    generate_viz(times=times_dict, percents=percent_dict)
+    
 if __name__ == "__main__":
     main()
