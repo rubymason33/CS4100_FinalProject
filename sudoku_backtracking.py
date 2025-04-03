@@ -77,7 +77,7 @@ def generate_viz(times:dict, percents:dict):
     plt.title(f'Time Distribution by Difficulty for {num_examples} Boards')
     plt.grid(axis='y')
     plt.tight_layout()
-    plt.savefig('TimePlot.png')
+    plt.savefig('TimePlotBacktracking.png')
     plt.show()
 
 
@@ -88,7 +88,7 @@ def generate_viz(times:dict, percents:dict):
     plt.title(f'Average Percent Correct by Difficulty for {num_examples} Boards')
     plt.grid(axis='y')
     plt.tight_layout()
-    plt.savefig('PercentPlot.png')
+    plt.savefig('PercentPlotBacktracking.png')
     plt.show()
     
     return
