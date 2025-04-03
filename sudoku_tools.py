@@ -209,6 +209,73 @@ def is_valid_board(board: list) -> bool:
         
     return all([all_rows, all_cols, all_cells])
 
+def is_currently_valid_sequence(sequence: list) -> bool:
+    """Check if a sequence is currently valid
+
+    Args:
+        sequence (list): a list of ints ranging from 1-9
+
+    Returns:
+        bool: if the sequence is unique 1-9 (valid sudoku)
+    """
+    filled_nums = [num for num in sequence if num !=0]
+    no_dups = set(filled_nums)
+    
+    return len(no_dups) == len(filled_nums)
+
+def is_currently_valid_board(board: list) ->bool:
+    """Checks if board is currently a valid sudoku solution
+
+    Args:
+        board (list): a 2d list of ints representing the board
+
+    Returns:
+        bool: if the board is a valid solution
+    """
+    all_rows = True
+    all_cols = True
+    all_cells = True
+    
+    rows = [row for row in board]
+    cols = []
+    cells = []
+    
+    # get the cols
+    for i in range(9):
+        col = []
+        for row in board:
+            col.append(row[i])
+        cols.append(col)
+        
+    # get the cells
+    for cell_row in range(0, 9, 3):
+        for cell_col in range(0, 9, 3):
+            cell = []
+            for i in range(3):
+                for j in range(3):
+                    cell.append(board[cell_row + i][cell_col + j])
+            cells.append(cell)
+            
+    # check all the rows
+    for row in rows:
+        if not is_currently_valid_sequence(row):
+            all_rows = False
+            break
+
+    # check all the cols
+    for col in cols:
+        if not is_currently_valid_sequence(col):
+            all_cols = False
+            break
+
+    # check all the cells
+    for cell in cells:
+        if not is_currently_valid_sequence(cell):
+            all_cells = False
+            break
+        
+    return all([all_rows, all_cols, all_cells])
+
 
 
 
