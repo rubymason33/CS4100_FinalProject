@@ -6,13 +6,21 @@ import backtracking_functions as sb
 import pprint
 import time
 import matplotlib.pyplot as plt
+import pickle
 
-
+def save_dict(save_dict: dict, filename: str):
+    with open(filename, 'wb') as f:
+        pickle.dump(save_dict, f)
+        
+def load_dict(filename: str) -> dict:
+    with open(filename, 'rb') as f:
+        return pickle.load(f)
 
 def test_level(difficulty: str, num_examples: int=10):
-    print(f'Results for {difficulty} level')
+    print(f'RESULTS FOR {difficulty.upper()} LEVEL!!!!:\n')
     times = []
     percents = []
+    progess_count = 1
     boards = sutils.get_test_boards(difficulty=difficulty, num_examples=num_examples)
     for board in boards:
         solver = sb.Backtracking(board['board_input'])
@@ -36,6 +44,8 @@ def test_level(difficulty: str, num_examples: int=10):
         print(f'Number Correct: {num_correct},\n'
               f'Percent Correct: {percent_correct*100:.2f}%\n'
               f'Time Taken to Solve: {elapsed_time}')
+        print(f'Board number: {progess_count}/{num_examples}')
+        progess_count += 1
         print()
         times.append(elapsed_time)
         percents.append(percent_correct)
@@ -66,7 +76,7 @@ def generate_viz(times:dict, percents:dict):
 
     # box plot for times
     plt.figure(figsize=(10,6))
-    box = plt.boxplot(all_times, patch_artist=True, tick_labels=difficulties)
+    box = plt.boxplot(all_times, patch_artist=True, tick_labels=difficulties, showfliers=True)
 
     # apply color
     for patch, diff in zip(box['boxes'], difficulties):
@@ -74,6 +84,7 @@ def generate_viz(times:dict, percents:dict):
 
     # title
     plt.ylabel('Time (s)')
+    plt.ylim(top=225)
     plt.title(f'Time Distribution by Difficulty for {num_examples} Boards')
     plt.grid(axis='y')
     plt.tight_layout()
@@ -95,7 +106,16 @@ def generate_viz(times:dict, percents:dict):
 
 
 def main():
-    times_dict, percent_dict = collect_level_data(num_examples=10)
+    # times_dict, percent_dict = collect_level_data(num_examples=50)
+    
+    # # save the dicts for later
+    # save_dict(save_dict=times_dict, filename='times_dict.pkl')
+    # save_dict(save_dict=percent_dict, filename='percent_dict.pkl')
+    
+    # load in the dicts
+    times_dict = load_dict(filename='times_dict.pkl')
+    percent_dict = load_dict(filename='percent_dict.pkl')
+    
     generate_viz(times=times_dict, percents=percent_dict)
     
 if __name__ == "__main__":
