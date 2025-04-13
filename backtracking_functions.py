@@ -34,11 +34,11 @@ class Backtracking():
         
         row, col = empty
         
-        for num in range(1, 10):
+        for num in range(1, 10): # check 1-9
             self.board[row][col] = num
             
             if sutils.is_currently_valid_board(self.board):
-                if self.solve():
+                if self.solve(): # recursive call
                     return self.board
                 
             self.board[row][col] = 0 # set back as empty
