@@ -66,7 +66,7 @@ def collect_level_data(num_examples: int=10):
     
     return times_dict, percents_dict
         
-def generate_viz(times:dict, percents:dict):
+def generate_viz(times:dict, percents:dict, y_cutoff:int=None, times_savefile:str='TimePlotBacktracking.png', percents_savefile:str='PercentPlotBacktracking.png'):
     # transform the data for plotting
     difficulties = list(times.keys())
     num_examples = len(times['easy'])
@@ -84,11 +84,12 @@ def generate_viz(times:dict, percents:dict):
 
     # title
     plt.ylabel('Time (s)')
-    plt.ylim(top=225)
+    if y_cutoff:
+        plt.ylim(top=y_cutoff)
     plt.title(f'Time Distribution by Difficulty for {num_examples} Boards')
     plt.grid(axis='y')
     plt.tight_layout()
-    plt.savefig('TimePlotBacktracking.png')
+    plt.savefig(times_savefile)
     plt.show()
 
 
@@ -99,24 +100,25 @@ def generate_viz(times:dict, percents:dict):
     plt.title(f'Average Percent Correct by Difficulty for {num_examples} Boards')
     plt.grid(axis='y')
     plt.tight_layout()
-    plt.savefig('PercentPlotBacktracking.png')
+    plt.savefig(percents_savefile)
     plt.show()
     
     return
 
 
 def main():
-    # times_dict, percent_dict = collect_level_data(num_examples=50)
+    # times_dict, percent_dict = collect_level_data(num_examples=1000)
     
     # # save the dicts for later
-    # save_dict(save_dict=times_dict, filename='times_dict.pkl')
-    # save_dict(save_dict=percent_dict, filename='percent_dict.pkl')
+    # save_dict(save_dict=times_dict, filename='times_dict_updated1000.pkl')
+    # save_dict(save_dict=percent_dict, filename='percent_dict_updated1000.pkl')
     
     # load in the dicts
-    times_dict = load_dict(filename='times_dict.pkl')
-    percent_dict = load_dict(filename='percent_dict.pkl')
+    times_dict = load_dict(filename='times_dict_updated.pkl')
+    percent_dict = load_dict(filename='percent_dict_updated.pkl')
     
-    generate_viz(times=times_dict, percents=percent_dict)
-    
+    # generate_viz(times=times_dict, percents=percent_dict, y_cutoff=0.7, times_savefile='TimePlotBacktrackingUpdated1000.png', percents_savefile='PercentPlotBacktrackingUpdated1000.png')
+    generate_viz(times=times_dict, percents=percent_dict, times_savefile='TimePlotBacktrackingUpdated.png', percents_savefile='PercentPlotBacktrackingUpdated.png')
+
 if __name__ == "__main__":
     main()
