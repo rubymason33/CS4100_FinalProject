@@ -1,5 +1,6 @@
 """
 Functions for the backtracking algorithm
+Nothing to run here :)
 """
 
 import sudoku_tools as sutils
