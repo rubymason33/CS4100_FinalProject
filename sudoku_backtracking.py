@@ -1,5 +1,7 @@
 """
 File where we will run the backtracking algorithm
+To run, uncomment specified portion in main fn, make sure to give proper num of test examples and savefile names
+To tweak visualization, comment out section and load in the saved pkl files and modify viz
 """
 import sudoku_tools as sutils
 import backtracking_functions as sb
@@ -107,11 +109,13 @@ def generate_viz(times:dict, percents:dict, y_cutoff:int=None, times_savefile:st
 
 
 def main():
+    # # ------- uncomment to run backtracking algorithm ----------
     # times_dict, percent_dict = collect_level_data(num_examples=1000)
     
     # # save the dicts for later
     # save_dict(save_dict=times_dict, filename='times_dict_updated1000.pkl')
     # save_dict(save_dict=percent_dict, filename='percent_dict_updated1000.pkl')
+    # # -------------------------------------------------------------
     
     # load in the dicts
     times_dict = load_dict(filename='times_dict_updated.pkl')
