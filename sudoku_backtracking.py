@@ -1,18 +1,28 @@
 """
 File where we will run the backtracking algorithm
+To run, uncomment specified portion in main fn, make sure to give proper num of test examples and savefile names
+To tweak visualization, comment out section and load in the saved pkl files and modify viz
 """
 import sudoku_tools as sutils
 import backtracking_functions as sb
 import pprint
 import time
 import matplotlib.pyplot as plt
+import pickle
 
-
+def save_dict(save_dict: dict, filename: str):
+    with open(filename, 'wb') as f:
+        pickle.dump(save_dict, f)
+        
+def load_dict(filename: str) -> dict:
+    with open(filename, 'rb') as f:
+        return pickle.load(f)
 
 def test_level(difficulty: str, num_examples: int=10):
-    print(f'Results for {difficulty} level')
+    print(f'RESULTS FOR {difficulty.upper()} LEVEL!!!!:\n')
     times = []
     percents = []
+    progess_count = 1
     boards = sutils.get_test_boards(difficulty=difficulty, num_examples=num_examples)
     for board in boards:
         solver = sb.Backtracking(board['board_input'])
@@ -36,6 +46,8 @@ def test_level(difficulty: str, num_examples: int=10):
         print(f'Number Correct: {num_correct},\n'
               f'Percent Correct: {percent_correct*100:.2f}%\n'
               f'Time Taken to Solve: {elapsed_time}')
+        print(f'Board number: {progess_count}/{num_examples}')
+        progess_count += 1
         print()
         times.append(elapsed_time)
         percents.append(percent_correct)
@@ -56,7 +68,7 @@ def collect_level_data(num_examples: int=10):
     
     return times_dict, percents_dict
         
-def generate_viz(times:dict, percents:dict):
+def generate_viz(times:dict, percents:dict, y_cutoff:int=None, times_savefile:str='TimePlotBacktracking.png', percents_savefile:str='PercentPlotBacktracking.png'):
     # transform the data for plotting
     difficulties = list(times.keys())
     num_examples = len(times['easy'])
@@ -66,7 +78,7 @@ def generate_viz(times:dict, percents:dict):
 
     # box plot for times
     plt.figure(figsize=(10,6))
-    box = plt.boxplot(all_times, patch_artist=True, tick_labels=difficulties)
+    box = plt.boxplot(all_times, patch_artist=True, tick_labels=difficulties, showfliers=True)
 
     # apply color
     for patch, diff in zip(box['boxes'], difficulties):
@@ -74,10 +86,12 @@ def generate_viz(times:dict, percents:dict):
 
     # title
     plt.ylabel('Time (s)')
+    if y_cutoff:
+        plt.ylim(top=y_cutoff)
     plt.title(f'Time Distribution by Difficulty for {num_examples} Boards')
     plt.grid(axis='y')
     plt.tight_layout()
-    plt.savefig('TimePlotBacktracking.png')
+    plt.savefig(times_savefile)
     plt.show()
 
 
@@ -88,15 +102,27 @@ def generate_viz(times:dict, percents:dict):
     plt.title(f'Average Percent Correct by Difficulty for {num_examples} Boards')
     plt.grid(axis='y')
     plt.tight_layout()
-    plt.savefig('PercentPlotBacktracking.png')
+    plt.savefig(percents_savefile)
     plt.show()
     
     return
 
 
 def main():
-    times_dict, percent_dict = collect_level_data(num_examples=10)
-    generate_viz(times=times_dict, percents=percent_dict)
+    # # ------- uncomment to run backtracking algorithm ----------
+    # times_dict, percent_dict = collect_level_data(num_examples=1000)
     
+    # # save the dicts for later
+    # save_dict(save_dict=times_dict, filename='times_dict_updated1000.pkl')
+    # save_dict(save_dict=percent_dict, filename='percent_dict_updated1000.pkl')
+    # # -------------------------------------------------------------
+    
+    # load in the dicts
+    times_dict = load_dict(filename='times_dict_updated.pkl')
+    percent_dict = load_dict(filename='percent_dict_updated.pkl')
+    
+    # generate_viz(times=times_dict, percents=percent_dict, y_cutoff=0.7, times_savefile='TimePlotBacktrackingUpdated1000.png', percents_savefile='PercentPlotBacktrackingUpdated1000.png')
+    generate_viz(times=times_dict, percents=percent_dict, times_savefile='TimePlotBacktrackingUpdated.png', percents_savefile='PercentPlotBacktrackingUpdated.png')
+
 if __name__ == "__main__":
     main()
